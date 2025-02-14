@@ -4,62 +4,73 @@ import random
 # Red Protocol Simulation
 
 # Node class
-
-
-
-class Node: 
-    # list of links
-    # node coordinates
-    
-
+class Node:
+    def __init__(self, propScale):
+        self.pos = (random.uniform(0, propScale), random.uniform(0, propScale))
+        self.links = []
 
 
 # Host class (node)
 class Host(Node):
-    # bool sending packets or not (on/off)
-    # ack 
-    # most reacent ack
-    # tick function
-    # udp queue
-    # number of packets sent
-    # number of packets received
-    # (each host)
-    # rtt 
-    # retransmission timer
-    # tcp queue
-    # window size
-    # devrtt
-    # rto
+    def __init__(self, propScale):
+        super().__init__(self, propScale)
+        self.sendState = False
+        self.udpQueue = []
+
+        self.tcpQueue = []
+        self.ackQueue = []
+        self.cwnd = 1
+        self.estimatedRTT = 0
+        self.devRTT = 0
+        self.RTO = 0
+
+        self.packetsSent = 0
+        self.packetsRecieved = 0
+        
+    def tick(self):
+        # tcp stuff
+
+        # udp stuff
+        pass
 
 
 # Router class (node)
 class Router(Node):
-    # dict of links
-    # routing table
-    # routing algorithm
-    # packet queue
-    # packet buffer
-    # tick function
-    # average queue length
+    def __init__(self, propScale, bufferSize):
+        super().__init__(propScale)
+        self.links = [] # Connected links
+        self.routingTable = {} # Host, Link
+        self.bufferSize = bufferSize
+        self.queues = {} # Link, List
+
+        self.averageQueueLength = 0
+
+        self.buildRoutingTable()
+
+    def buildRoutingTable(self):
+        # prims
+        pass
+
 
 # Packet class
 class Packet:
-    # type udp or tcp
-    # soruce
-    # destination
-    # ack bit
-    # sequence number
+    def __init__(self, type, source, destination):
+        self.type = type # string, bool, or int?
+        self.source = source
+        self.destination = destination
+
+        # tcp stuff
 
 
 # Link class
 class Link:
-    # fixed propogation delay
-    # packet 
-    # nodes conencted (2)
-    # direction
-    # tick function
+    def __init__(self, node1, node2):
+        self.node1 = node1
+        self.node2 = node2
+        self.currentDirection = 2 # 1 = from 2 to 1, 2 = from 1 to 2
 
 
+def simulation():
+    pass
 
-def simulation
-
+simulation()
