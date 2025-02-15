@@ -2,7 +2,8 @@ import random
 
 # Node class
 class Node:
-    def __init__(self, propScale, occupied):
+    def __init__(self, sim, propScale, occupied):
+        self.sim = sim
         self.x = random.uniform(0, propScale)
         self.y = random.uniform(0, propScale)
         while ((self.x, self.y) in occupied):

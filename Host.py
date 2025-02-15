@@ -1,10 +1,11 @@
 from link import Link
 from node import Node
+import numpy as np
 
 # Host class (node)
 class Host(Node):
-    def __init__(self, propScale, occupied, aON, aOFF, routers):
-        super().__init__(propScale, occupied)
+    def __init__(self, sim, propScale, occupied, aON, aOFF, routers):
+        super().__init__(sim, propScale, occupied)
         self.sendState = False
         self.udpQueue = []
 
@@ -38,6 +39,13 @@ class Host(Node):
         return bestRouter
 
     def tick(self):
+        if t <= 0:
+            self.sendState = not self.sendState
+            t = (np.random.pareto(self.aON if self.sendState else self.aOFF) + 1) * self.xMin
+            if self.sendState:
+                destinationHost = self.sim.getRandomHost(self) # TODO(Owen) sending packets
+        else:
+            t -= 1 # 1? idk time
         # tcp stuff
 
         # udp stuff

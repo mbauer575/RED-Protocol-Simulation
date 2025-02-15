@@ -8,3 +8,5 @@ class Packet:
         self.destination = destination
 
         # tcp stuff
+        self.sequenceNum = 0
+        self.ackBit = 0

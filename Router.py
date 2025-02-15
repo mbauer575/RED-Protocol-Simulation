@@ -3,8 +3,8 @@ from node import Node
 
 # Router class (node)
 class Router(Node):
-    def __init__(self, propScale, occupied, bufferSize):
-        super().__init__(propScale, occupied)
+    def __init__(self, sim, propScale, occupied, bufferSize):
+        super().__init__(sim, propScale, occupied)
         self.links = [] # Connected links
         self.routingTable = {} # Host, Link
         self.bufferSize = bufferSize

@@ -3,6 +3,7 @@ from link import Link
 from node import Node
 from router import Router
 from packet import Packet
+import random
 
 import matplotlib.pyplot as plt
 
@@ -36,17 +37,17 @@ def prims(routers):
 
 # Debug draw nodes
 # Makes a graph of all node positions and links
-def drawNodes(routers, hosts, scale):
+def drawNodes(sim):
     routerCoordsX = []
     routerCoordsY = []
-    for router in routers:
+    for router in sim.routers:
         routerCoordsX.append(router.x)
         routerCoordsY.append(router.y)
         for link in router.links:
             plt.plot([link.node1.x, link.node2.x], [link.node1.y, link.node2.y], color='blue', zorder=1)
     hostCoordsX = []
     hostCoordsY = []
-    for host in hosts:
+    for host in sim.hosts:
         hostCoordsX.append(host.x)
         hostCoordsY.append(host.y)
     plt.scatter(routerCoordsX, routerCoordsY, color='red', label='Routers', zorder=2)
@@ -54,34 +55,50 @@ def drawNodes(routers, hosts, scale):
     plt.xlabel("X Axis")
     plt.ylabel("Y Axis")
     plt.title("Nodes")
-    plt.xticks(range(0,scale + 1))
-    plt.yticks(range(0,scale + 1))
+    plt.xticks(range(0,sim.propScale + 1))
+    plt.yticks(range(0,sim.propScale + 1))
     plt.legend()
     plt.show()
 
-def simulation(numRouters, numHosts, aON, aOFF, bufferSize, wq, minTh, maxTh, maxP, propScale):
-    occupied = [None]*(numRouters+numHosts)
+class Simulation():
+    def __init__(self, numRouters, numHosts, aON, aOFF, bufferSize, wq, minTh, maxTh, maxP, propScale):
+        self.propScale = propScale
+        occupied = [None]*(numRouters+numHosts)
     
-    # create routers
-    routers = [None]*numRouters
-    for i in range(numRouters):
-        routers[i] = Router(propScale, occupied, bufferSize)
-    
-    # connect routers (MST)
-    mst = prims(routers)
-    for edge in mst:
-        edge[0].linkTo(edge[1])
+        # create routers
+        self.routers = [None]*numRouters
+        for i in range(numRouters):
+            self.routers[i] = Router(self, self.propScale, occupied, bufferSize)
+        
+        # connect routers (MST)
+        mst = prims(self.routers)
+        for edge in mst:
+            edge[0].linkTo(edge[1])
 
-    # create hosts
-    hosts = [None]*numHosts
-    for i in range(numHosts):
-        hosts[i] = Host(propScale, occupied, aON, aOFF, routers)
+        # create hosts
+        self.hosts = [None]*numHosts
+        for i in range(numHosts):
+            self.hosts[i] = Host(self, self.propScale, occupied, aON, aOFF, self.routers)
 
-    for i in range(numRouters):
-        print(routers[i])
-    for i in range(numHosts):
-        print(hosts[i])
-    # drawNodes(routers, hosts, propScale)
+        for i in range(numRouters):
+            print(self.routers[i])
+        for i in range(numHosts):
+            print(self.hosts[i])
+        drawNodes(self)
 
+    def getRandomHost(self, exclude):
+        h = random.choice(self.hosts)
+        while (h != exclude):
+            h = random.choice(self.hosts)
+        return h
 
-simulation(6, 4, 2, 1, 5, 0, 0, 0, 0, 10)
+    def run(self, runTicks):
+        # run simulation
+        self.tick = 0
+        while (self.tick < runTicks):
+
+            self.tick += 1
+        pass
+
+currentSim = Simulation(6, 4, 2, 1, 5, 0, 0, 0, 0, 10)
+currentSim.run(1000)
