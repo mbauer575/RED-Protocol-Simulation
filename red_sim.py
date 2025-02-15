@@ -62,6 +62,7 @@ def drawNodes(sim):
 
 class Simulation():
     def __init__(self, numRouters, numHosts, aON, aOFF, bufferSize, wq, minTh, maxTh, maxP, propScale):
+        self.tick = 0
         self.propScale = propScale
         occupied = [None]*(numRouters+numHosts)
     
@@ -84,7 +85,7 @@ class Simulation():
             print(self.routers[i])
         for i in range(numHosts):
             print(self.hosts[i])
-        drawNodes(self)
+        # drawNodes(self)
 
     def getRandomHost(self, exclude):
         h = random.choice(self.hosts)
@@ -94,9 +95,9 @@ class Simulation():
 
     def run(self, runTicks):
         # run simulation
-        self.tick = 0
         while (self.tick < runTicks):
-
+            for host in self.hosts:
+                host.tick()
             self.tick += 1
         pass
 

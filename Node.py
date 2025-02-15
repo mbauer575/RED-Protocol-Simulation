@@ -19,7 +19,7 @@ class Node:
     
     def linkTo(self, node):
         from link import Link
-        link = Link(self, node)
+        link = Link(self.sim, self, node)
         self.links.append(link)
         node.links.append(link)
 

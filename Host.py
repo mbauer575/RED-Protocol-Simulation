@@ -1,6 +1,8 @@
 from link import Link
 from node import Node
+from packet import Packet
 import numpy as np
+import random
 
 # Host class (node)
 class Host(Node):
@@ -8,15 +10,16 @@ class Host(Node):
         super().__init__(sim, propScale, occupied)
         self.sendState = False
         self.udpQueue = []
+        self.hostDestination = None
 
         self.aON = aON
         self.aOFF = aOFF
         self.xMin = 1
         self.t = 0
 
-        self.tcpQueue = []
-        self.ackQueue = []
-        self.cwnd = 1
+        self.tcpQueue = {} # Host, []
+        self.ackQueue = {} # Host, []
+        self.cwnd = {} # Host, int (default: 1)
         self.estimatedRTT = 0
         self.devRTT = 0
         self.rto = 0
@@ -39,17 +42,38 @@ class Host(Node):
         return bestRouter
 
     def tick(self):
-        if t <= 0:
+        if self.t <= 0:
             self.sendState = not self.sendState
-            t = (np.random.pareto(self.aON if self.sendState else self.aOFF) + 1) * self.xMin
+            self.t = (np.random.pareto(self.aON if self.sendState else self.aOFF) + 1) * self.xMin
             if self.sendState:
-                destinationHost = self.sim.getRandomHost(self) # TODO(Owen) sending packets
+                self.hostDestination = self.sim.getRandomHost(self)
+                # self.sendType = random.choice(["udp", "tcp"])
+                self.sendType = "udp" # temp
         else:
-            t -= 1 # 1? idk time
-        # tcp stuff
+            self.t -= 1 # 1? idk time
 
-        # udp stuff
-        pass
+        if self.sendState:
+            if self.sendType == "udp":
+                self.udpQueue.append(Packet("udp", self, self.hostDestination, self.sim.tick))
+            elif self.sendType == "tcp":
+                pass
 
+        if not self.links[0].active:
+            avaliableQueues = []
+            # for each host check tcp in cwnd
+
+            #check udp queue
+            if len(self.udpQueue) > 0:
+                avaliableQueues.append(self.udpQueue)
+
+            #get random queue
+            queue = random.choice(avaliableQueues)
+            if len(queue) > 0:
+                if (queue[0].type == "udp"):
+                    self.links[0].injectPacket(self, queue.pop(0))
+                elif (queue[0].type == "tcp"):
+                    pass
+
+    
     def __str__(self):
         return super().__str__()
