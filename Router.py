@@ -44,6 +44,7 @@ class Router(Node):
                 self.routingTable[host] = link
     
     def tick(self):
+        # Process incoming packets
         for link in self.links:
             packet = link.getPacket(self)
             if packet:
@@ -55,6 +56,7 @@ class Router(Node):
                 else:
                     self.droppedPackets += 1
         
+        # Send outgoing packets
         for link, queue in self.queues.items():
             if not link.active and len(queue) > 0:
                 if link.injectPacket(self, queue[0]):

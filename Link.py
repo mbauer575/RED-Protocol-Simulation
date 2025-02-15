@@ -25,6 +25,8 @@ class Link:
         return 2 if node == self.node2 else 1 if node == self.node1 else None
     
     def getPacket(self, node):
+        if not self.active:
+            return None
         if self.currentDirection == self.getNodeNum(node):
             if self.sim.tick >= self.arriveTime:
                 packet = self.packet

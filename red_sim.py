@@ -125,7 +125,19 @@ class Simulation():
             for router in self.routers:
                 dropped += router.droppedPackets
             return dropped
+        elif stat == "sentPackets":
+            sent = 0
+            for host in self.hosts:
+                sent += host.packetsSent
+            return sent
+        elif stat == "recievedPackets":
+            recieved = 0
+            for host in self.hosts:
+                recieved += host.packetsRecieved
+            return recieved
 
-currentSim = Simulation(6, 4, 2, 1, 5, 0, 0, 0, 0, 10)
-currentSim.run(1000)
+currentSim = Simulation(3, 4, 100, 1, 1, 0, 0, 0, 0, 100)
+currentSim.run(10000)
+print(f"Sent {currentSim.getStat('sentPackets')} packets")
+print(f"Recieved {currentSim.getStat('recievedPackets')} packets")
 print(f"Dropped {currentSim.getStat('droppedPackets')} packets")

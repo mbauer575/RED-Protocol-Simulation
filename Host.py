@@ -46,9 +46,10 @@ class Host(Node):
         # check link for incoming
         incomingPacket = self.links[0].getPacket(self)
         if incomingPacket:
-            print(f"{self} recieved a packet from {incomingPacket.source}")
+            # print(f"{self} recieved a packet from {incomingPacket.source}")
             self.packetsRecieved += 1
 
+        self.t -= 1
         if self.t <= 0:
             self.sendState = not self.sendState
             self.t = (np.random.pareto(self.aON if self.sendState else self.aOFF) + 1) * self.xMin
@@ -56,8 +57,6 @@ class Host(Node):
                 self.hostDestination = self.sim.getRandomHost(self)
                 # self.sendType = random.choice(["udp", "tcp"])
                 self.sendType = "udp" # temp
-        else:
-            self.t -= 1 # 1? idk time
 
         if self.sendState:
             if self.sendType == "udp":
@@ -72,13 +71,12 @@ class Host(Node):
             #check udp queue
             if len(self.udpQueue) > 0:
                 avaliableQueues.append(self.udpQueue)
-
             if len(avaliableQueues) > 0:
                 #get random queue
                 queue = random.choice(avaliableQueues)
                 if len(queue) > 0:
                     if (queue[0].type == "udp"):
-                        if self.links[0].injectPacket(self, queue[0]):
+                        if not self.links[0].active and self.links[0].injectPacket(self, queue[0]):
                             self.packetsSent += 1
                             queue.pop(0)
                     elif (queue[0].type == "tcp"):
