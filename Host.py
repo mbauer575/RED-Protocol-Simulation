@@ -6,7 +6,7 @@ import random
 
 # Host class (node)
 class Host(Node):
-    def __init__(self, sim, propScale, occupied, aON, aOFF, routers):
+    def __init__(self, sim, propScale, occupied, aON, aOFF, routers, mst):
         super().__init__(sim, propScale, occupied)
         self.sendState = False
         self.hostDestination = None
@@ -37,9 +37,10 @@ class Host(Node):
     
 
 
-        self.findClosestRouter(routers).linkTo(self)
+        hostRouter = self.findClosestRouter(routers)
+        hostRouter.linkTo(self)
         for router in routers:
-            router.generateRoute(self)
+            router.generateRoute(self, mst, hostRouter)
     
     def findClosestRouter(self, routers):
         bestDist = None
@@ -52,6 +53,13 @@ class Host(Node):
         return bestRouter
 
     def tick(self):
+        # check link for incoming
+        incomingPacket = self.links[0].getPacket(self)
+        if incomingPacket:
+            # print(f"{self} recieved a packet from {incomingPacket.source}")
+            self.packetsRecieved += 1
+
+        self.t -= 1
         if self.t <= 0:
             self.sendState = not self.sendState
             self.t = (np.random.pareto(self.aON if self.sendState else self.aOFF) + 1) * self.xMin
@@ -59,8 +67,6 @@ class Host(Node):
                 self.hostDestination = self.sim.getRandomHost(self)
                 # self.sendType = random.choice(["udp", "tcp"])
                 self.sendType = "udp" # temp
-        else:
-            self.t -= 1 # 1? idk time
 
         if self.sendState:
             if self.sendType == "udp":

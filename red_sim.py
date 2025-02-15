@@ -35,9 +35,8 @@ def prims(routers):
     
     return mst
 
-# Debug draw nodes
-# Makes a graph of all node positions and links
-def drawNodes(sim):
+
+def generateNodePlot(sim):
     routerCoordsX = []
     routerCoordsY = []
     for router in sim.routers:
@@ -57,6 +56,22 @@ def drawNodes(sim):
     plt.title("Nodes")
     plt.xticks(range(0,sim.propScale + 1))
     plt.yticks(range(0,sim.propScale + 1))
+    plt.legend()
+
+# Debug draw nodes
+# Makes a graph of all node positions and links
+def drawNodes(sim):
+    generateNodePlot(sim)
+    plt.show()
+
+# Debug draw route
+# Makes a graph of all node positions and links
+def drawRoute(sim, source, dest):
+    generateNodePlot(sim)
+    plt.scatter(source.x, source.y, color="orange", label="Source", zorder=4)
+    plt.scatter(dest.x, dest.y, color="purple", label="Destination", zorder=4)
+    link = source.routingTable[dest]
+    plt.plot([link.node1.x, link.node2.x], [link.node1.y, link.node2.y], color='yellow', zorder=1)
     plt.legend()
     plt.show()
 
@@ -79,13 +94,14 @@ class Simulation():
         # create hosts
         self.hosts = [None]*numHosts
         for i in range(numHosts):
-            self.hosts[i] = Host(self, self.propScale, occupied, aON, aOFF, self.routers)
+            self.hosts[i] = Host(self, self.propScale, occupied, aON, aOFF, self.routers, mst)
 
         for i in range(numRouters):
             print(self.routers[i])
         for i in range(numHosts):
             print(self.hosts[i])
         # drawNodes(self)
+        # drawRoute(self, random.choice(self.routers), random.choice(self.hosts))
 
     def getRandomHost(self, exclude):
         h = random.choice(self.hosts)
@@ -98,8 +114,30 @@ class Simulation():
         while (self.tick < runTicks):
             for host in self.hosts:
                 host.tick()
+            for router in self.routers:
+                router.tick()
             self.tick += 1
         pass
+    
+    def getStat(self, stat):
+        if stat == "droppedPackets":
+            dropped = 0
+            for router in self.routers:
+                dropped += router.droppedPackets
+            return dropped
+        elif stat == "sentPackets":
+            sent = 0
+            for host in self.hosts:
+                sent += host.packetsSent
+            return sent
+        elif stat == "recievedPackets":
+            recieved = 0
+            for host in self.hosts:
+                recieved += host.packetsRecieved
+            return recieved
 
-currentSim = Simulation(6, 4, 2, 1, 5, 0, 0, 0, 0, 10)
-currentSim.run(1000)
+currentSim = Simulation(3, 4, 100, 1, 1, 0, 0, 0, 0, 100)
+currentSim.run(10000)
+print(f"Sent {currentSim.getStat('sentPackets')} packets")
+print(f"Recieved {currentSim.getStat('recievedPackets')} packets")
+print(f"Dropped {currentSim.getStat('droppedPackets')} packets")
