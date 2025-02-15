@@ -9,23 +9,33 @@ class Host(Node):
     def __init__(self, sim, propScale, occupied, aON, aOFF, routers):
         super().__init__(sim, propScale, occupied)
         self.sendState = False
-        self.udpQueue = []
         self.hostDestination = None
-
         self.aON = aON
         self.aOFF = aOFF
         self.xMin = 1
         self.t = 0
-
-        self.tcpQueue = {} # Host, []
-        self.ackQueue = {} # Host, []
-        self.cwnd = {} # Host, int (default: 1)
-        self.estimatedRTT = 0
+        
+        #QUEUES
+        self.udpQueue = []
+        self.tcpQueue = {} #Host: []
+        self.ackQueue = {} #Host: []
+        
+        #CONGESTION CONTROL
+        self.cwnd = {} # Host: int (default: 1)
+        self.ssthresh = {}
+        self.unackedPackets = {}
+        self.duplicateAcks = {}
+        self.estimatedRTT = 1
         self.devRTT = 0
-        self.rto = 0
-
+        self.rto = 3
+        self.timers = {}
+        
+        #PACKET TRACKING
         self.packetsSent = 0
         self.packetsRecieved = 0
+        self.nextSeqNum = {}
+    
+
 
         self.findClosestRouter(routers).linkTo(self)
         for router in routers:
@@ -56,7 +66,7 @@ class Host(Node):
             if self.sendType == "udp":
                 self.udpQueue.append(Packet("udp", self, self.hostDestination, self.sim.tick))
             elif self.sendType == "tcp":
-                pass
+                self.sendTCPPacket(self.hostDestination)
 
         if not self.links[0].active:
             avaliableQueues = []
@@ -66,14 +76,62 @@ class Host(Node):
             if len(self.udpQueue) > 0:
                 avaliableQueues.append(self.udpQueue)
 
+            #check tcp queues
+            if self.hostDestination in self.tcpQueue and len(self.tcpQueue[self.hostDestination])>0:
+                avaliableQueues.append(self.tcpQueue[self.hostDestination]
             #get random queue
-            queue = random.choice(avaliableQueues)
-            if len(queue) > 0:
-                if (queue[0].type == "udp"):
-                    self.links[0].injectPacket(self, queue.pop(0))
-                elif (queue[0].type == "tcp"):
-                    pass
+            if availableQueues:
+                queue = random.choice(availableQueues)
+                if queue:
+                    packet = queue.pop(0)
+                    self.links[0].injectPacket(self, packet)
 
-    
+    def sendTCPPacket(self, dest):
+        if dest not in self.cwnd:
+            self.cwnd[dest] = 1
+            self.ssthresh[dest] = 16
+            self.tcpQueue[dest] = []
+            self.unackedPackets[dest] = {}
+            self.nextSeqNum[dest] = 1
+        if len(self.unackedPackets[dest]) < self.cwnd[dest]:
+            seqNum = self.nextSeqNum[dest]
+            packet = Packet("tcp",self, dest, self.sim.tick, sequenceNum = seqNum)
+            self.tcpQueue[dest].append(packet)
+            self.unackedPackets[dest][seqNum] = packet
+            self.nextSeqNum[dest] += 1
+            self.timers[dest] = self.rto
+
+    def handleACK(self, ackPacket):
+        dest = ackPacket.source
+        if dest in self.unackedPackets:
+            expectedSeq = ackPacket.ackNum
+            for seq in self.unackedPackets[dest].keys():
+                if seq < expectedSeq:
+                    del self.unackedPackets[dest][seq]
+            if len(self.unackedPackets[dest]) == 0:
+                if self.cwnd[dest] < self.ssthresh[dest]: 
+                    self.cwnd[dest] += 1
+                else:
+                    self.cwnd[dest] += 1 / self.cwnd[dest]
+                self.duplicateAcks[dest] = 0
+            else:
+                self.duplicateAcks[dest] = self.duplicateAcks.get(dest,0) + 1
+                if self.duplicateAcks[dest] > 3:
+                    self.ssthresh[dest] = max(self.cwnd[dest] // 2, 1)
+                    self.cwnd[dest] = self.ssthesh[dest]
+                    self.retransmitPacket(dest, expectedSeq)
+
+    def retransmistPacket(self,dest, seqNum):
+        if dest in self.unackedPackets and seqNum in self.unackedPackets[dest]:
+            packet = self.unackedPackets[dest][seqNum]
+            self.tcpQueue[dest].append(packet)
+            self.timers[dest] = self.rto
+
+    def updateRTT(self, sampleRTT):
+        alpha, beta = 0.125, 0.25
+        self.estimatedRTT = (1-alpha) * self.estimatedRTT + alpha * sampleRTT
+        self.devRTT = (1-beta) * self.devRTT + beta * abs(sampleRTT - self.estimatedRTT)
+        self.rto = self.estimatedRTT + 4 * self.devRTT
+        
     def __str__(self):
         return super().__str__()
