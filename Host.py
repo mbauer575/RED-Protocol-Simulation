@@ -83,8 +83,9 @@ class Host(Node):
             if availableQueues:
                 queue = random.choice(availableQueues)
                 if queue:
-                    packet = queue.pop(0)
-                    self.links[0].injectPacket(self, packet)
+                    if self.links[0].injectPacket(self, queue[0]):
+                        queue.pop(0)
+                        self.packetsSent += 1
 
     def sendTCPPacket(self, dest):
         if dest not in self.cwnd:
