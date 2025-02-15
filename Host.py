@@ -69,16 +69,16 @@ class Host(Node):
                 self.sendTCPPacket(self.hostDestination)
 
         if not self.links[0].active:
-            avaliableQueues = []
+            availableQueues = []
             # for each host check tcp in cwnd
 
             #check udp queue
             if len(self.udpQueue) > 0:
-                avaliableQueues.append(self.udpQueue)
+                availableQueues.append(self.udpQueue)
 
             #check tcp queues
             if self.hostDestination in self.tcpQueue and len(self.tcpQueue[self.hostDestination])>0:
-                avaliableQueues.append(self.tcpQueue[self.hostDestination]
+                availableQueues.append(self.tcpQueue[self.hostDestination])
             #get random queue
             if availableQueues:
                 queue = random.choice(availableQueues)
