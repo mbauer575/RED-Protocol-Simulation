@@ -15,3 +15,16 @@ class Node:
     
     def distanceTo(self, node):
         return (self.x - node.x) ** 2 + (self.y - node.y) ** 2
+    
+    def linkTo(self, node):
+        from link import Link
+        link = Link(self, node)
+        self.links.append(link)
+        node.links.append(link)
+
+    def __str__(self):
+        data = f"{type(self).__name__} at {self.x:.2f}, {self.y:.2f}: Links: "
+        for link in self.links:
+            other = link.getOther(self)
+            data += f"{type(other).__name__}({other.x:.2f}, {other.y:.2f}) "
+        return data

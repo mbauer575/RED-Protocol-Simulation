@@ -23,7 +23,7 @@ class Host(Node):
         self.packetsSent = 0
         self.packetsRecieved = 0
 
-        self.links.append(Link(self, self.findClosestRouter(routers)))
+        self.findClosestRouter(routers).linkTo(self)
         for router in routers:
             router.generateRoute(self)
     
@@ -42,3 +42,6 @@ class Host(Node):
 
         # udp stuff
         pass
+
+    def __str__(self):
+        return super().__str__()
