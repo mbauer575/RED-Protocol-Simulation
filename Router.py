@@ -1,9 +1,10 @@
-import Node, Link
+from link import Link
+from node import Node
 
 # Router class (node)
 class Router(Node):
-    def __init__(self, propScale, bufferSize):
-        super().__init__(propScale)
+    def __init__(self, propScale, occupied, bufferSize):
+        super().__init__(propScale, occupied)
         self.links = [] # Connected links
         self.routingTable = {} # Host, Link
         self.bufferSize = bufferSize
@@ -11,8 +12,6 @@ class Router(Node):
 
         self.averageQueueLength = 0
 
-        self.buildRoutingTable()
-
-    def buildRoutingTable(self):
-        # prims
+    def generateRoute(self, host):
+        
         pass

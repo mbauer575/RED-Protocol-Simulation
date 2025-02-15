@@ -1,4 +1,4 @@
-import Link
+from link import Link
 
 # Packet class
 class Packet:
