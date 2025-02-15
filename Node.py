@@ -23,6 +23,12 @@ class Node:
         self.links.append(link)
         node.links.append(link)
 
+    def getLinkTo(self, neighbor):
+        for link in self.links:
+            if link.node1 == neighbor or link.node2 == neighbor:
+                return link
+        return None
+
     def __str__(self):
         data = f"{type(self).__name__} at {self.x:.2f}, {self.y:.2f}: Links: "
         for link in self.links:
