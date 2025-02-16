@@ -79,6 +79,7 @@ class Simulation():
     def __init__(self, numRouters, numHosts, aON, aOFF, bufferSize, wq, minTh, maxTh, maxP, propScale):
         self.tick = 0
         self.propScale = propScale
+        self.bufferSize = bufferSize
         occupied = [None]*(numRouters+numHosts)
     
         # create routers
@@ -140,10 +141,30 @@ class Simulation():
             for host in self.hosts:
                 hostQueue += len(host.udpQueue)
             return hostQueue
+        elif stat == "routerQueueLength":
+            lengths = 0
+            queues = 0
+            for router in self.routers:
+                for queue in router.queues.values():
+                    queues += 1
+                    lengths += len(queue)
+            return lengths / queues
+        elif stat == "routerQueueCongestion":
+            full = 0
+            queues = 0
+            for router in self.routers:
+                for queue in router.queues.values():
+                    queues += 1
+                    if len(queue) >= self.bufferSize:
+                        full += 1
+            return full / queues
 
-currentSim = Simulation(6, 15, 10, 1, 2, 0, 0, 0, 0, 10)
+currentSim = Simulation(6, 15, 10, 1, 10, 0, 0, 0, 0, 10)
 currentSim.run(10000)
-print(f"Sent {currentSim.getStat('sentPackets')} packets")
-print(f"Recieved {currentSim.getStat('recievedPackets')} packets")
-print(f"Dropped {currentSim.getStat('droppedPackets')} packets")
-print(f"In host queue: {currentSim.getStat('hostUDPQueue')} packets")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Recieved packets: {currentSim.getStat('recievedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Packets waiting in host queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+drawNodes(currentSim)
