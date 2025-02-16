@@ -89,7 +89,7 @@ class Router(Node):
             if not outlink.active and len(self.queues[outlink]) > 0:
                 outlink.injectPacket(self, packet)
 
-    def redDropProbability(queueLength):
+    def redDropProbability(self, queueLength):
         return 0
     
     def __str__(self):
