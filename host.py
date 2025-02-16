@@ -64,8 +64,8 @@ class Host(Node):
             if self.sendState:
                 self.hostDestination = self.sim.getRandomHost(self)
                 # self.hostDestination = self.sim.hosts[0] if not self == self.sim.hosts[0] else self.sim.getRandomHost(self)
-                # self.sendType = random.choice(["udp", "tcp"])
-                self.sendType = "udp" # temp
+                self.sendType = random.choice(["udp", "tcp"])
+                # self.sendType = "udp" # temp
 
         if self.sendState:
             if self.sendType == "udp":

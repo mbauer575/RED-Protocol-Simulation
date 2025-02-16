@@ -52,7 +52,7 @@ class Router(Node):
             if packet:
                 self.processPacket(packet)
         
-        # Send outgoing packets
+        # Forward packets
         for link, queue in self.queues.items():
             if not link.active and len(queue) > 0:
                 if link.injectPacket(self, queue[0]):
