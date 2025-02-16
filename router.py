@@ -1,5 +1,7 @@
 from link import Link
 from node import Node
+from packet import Packet
+import random
 
 # Router class (node)
 class Router(Node):
@@ -12,7 +14,7 @@ class Router(Node):
 
         self.averageQueueLength = 0
         self.droppedPackets = 0
-
+        
     def generateRoute(self, host, mst, hostRouter):
         if self == hostRouter:
             self.routingTable[host] = self.getLinkTo(host)
@@ -48,13 +50,7 @@ class Router(Node):
         for link in self.links:
             packet = link.getPacket(self)
             if packet:
-                if (self.routingTable[packet.destination] not in self.queues):
-                    self.queues[self.routingTable[packet.destination]] = []
-                queue = self.queues[self.routingTable[packet.destination]]
-                if len(queue) < self.bufferSize:
-                    queue.append(packet)
-                else:
-                    self.droppedPackets += 1
+                self.processPacket(packet)
         
         # Send outgoing packets
         for link, queue in self.queues.items():
@@ -62,5 +58,36 @@ class Router(Node):
                 if link.injectPacket(self, queue[0]):
                     queue.pop(0)
 
+    def processPacket(self,packet):
+        if packet.destination not in self.routingTable:
+            return
+        outlink = self.routingTable[packet.destination]
+        if outlink not in self.queues:
+            self.queues[outlink] = []
+        queue = self.queues[outlink]
+        dropProb =  self.redDropProbability(len(queue))
+        if len(queue) >= self.buffersize or (random.random() < drop.prob):
+            self.droppedPackets += 1
+            return
+
+        queue.append(packet)
+        if packet.type == "tcp":
+            if packet.ackBit == 0:
+                self.forwardPacket(packet)
+            else:
+                self.forwardAck(packet)
+
+    def forwardPacket(self, packet):
+        outlink = self.routingTable[packet.destination]
+        if outlink:
+            if not outlink.active and len(self.queues[outlink]) > 0:
+                outlink.injectPacket(self, packet)
+
+    def forwardAck(self, packet):
+        outlink = self.routingTable[packet.source]
+        if outlink:
+            if not outlink.active and len(self.queues[outlink]) > 0:
+                outlink.injectPacket(self, packet)
+    
     def __str__(self):
         return super().__str__()
