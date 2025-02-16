@@ -105,7 +105,7 @@ class Simulation():
 
     def getRandomHost(self, exclude):
         h = random.choice(self.hosts)
-        while (h != exclude):
+        while (h == exclude):
             h = random.choice(self.hosts)
         return h
 
@@ -135,9 +135,15 @@ class Simulation():
             for host in self.hosts:
                 recieved += host.packetsRecieved
             return recieved
+        elif stat == "hostUDPQueue":
+            hostQueue = 0
+            for host in self.hosts:
+                hostQueue += len(host.udpQueue)
+            return hostQueue
 
-currentSim = Simulation(6, 4, 100, 1, 1, 0, 0, 0, 0, 10)
+currentSim = Simulation(6, 15, 10, 1, 2, 0, 0, 0, 0, 10)
 currentSim.run(10000)
 print(f"Sent {currentSim.getStat('sentPackets')} packets")
 print(f"Recieved {currentSim.getStat('recievedPackets')} packets")
 print(f"Dropped {currentSim.getStat('droppedPackets')} packets")
+print(f"In host queue: {currentSim.getStat('hostUDPQueue')} packets")

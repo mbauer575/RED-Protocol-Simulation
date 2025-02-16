@@ -72,23 +72,27 @@ class Router(Node):
             return
 
         queue.append(packet)
-        if packet.type == "tcp":
-            if packet.ackBit == 0:
-                self.forwardPacket(packet)
-            else:
-                self.forwardAck(packet)
 
-    def forwardPacket(self, packet):
-        outlink = self.routingTable[packet.destination]
-        if outlink:
-            if not outlink.active and len(self.queues[outlink]) > 0:
-                outlink.injectPacket(self, packet)
+        # IDK what to do with this
+        # if packet.type == "tcp":
+        #     if packet.ackBit == 0:
+        #         self.forwardPacket(packet)
+        #     else:
+        #         self.forwardAck(packet)
+        # else:
+        #     self.forwardPacket(packet)
 
-    def forwardAck(self, packet):
-        outlink = self.routingTable[packet.source]
-        if outlink:
-            if not outlink.active and len(self.queues[outlink]) > 0:
-                outlink.injectPacket(self, packet)
+    # def forwardPacket(self, packet):
+    #     outlink = self.routingTable[packet.destination]
+    #     if outlink:
+    #         if not outlink.active and len(self.queues[outlink]) > 0:
+    #             outlink.injectPacket(self, packet)
+
+    # def forwardAck(self, packet):
+    #     outlink = self.routingTable[packet.source]
+    #     if outlink:
+    #         if not outlink.active and len(self.queues[outlink]) > 0:
+    #             outlink.injectPacket(self, packet)
 
     def redDropProbability(self, queueLength):
         return 0
