@@ -68,6 +68,7 @@ class Router(Node):
         dropProb = self.redDropProbability(len(queue))
         if len(queue) >= self.bufferSize or (random.random() < dropProb):
             self.droppedPackets += 1
+            print(f"Dropped: {packet}")
             return
 
         queue.append(packet)

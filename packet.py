@@ -16,3 +16,6 @@ class Packet:
             self.sequenceNum = None
             self.ackNum = None
             self.ackBit = None
+
+    def __str__(self):
+        return f"Packet ({self.type}) from {self.source} to {self.destination}"
