@@ -136,7 +136,7 @@ class Simulation():
                 recieved += host.packetsRecieved
             return recieved
 
-currentSim = Simulation(3, 4, 100, 1, 1, 0, 0, 0, 0, 100)
+currentSim = Simulation(3, 4, 100, 1, 1, 0, 0, 0, 0, 10)
 currentSim.run(10000)
 print(f"Sent {currentSim.getStat('sentPackets')} packets")
 print(f"Recieved {currentSim.getStat('recievedPackets')} packets")

@@ -65,7 +65,7 @@ class Router(Node):
         if outlink not in self.queues:
             self.queues[outlink] = []
         queue = self.queues[outlink]
-        dropProb =  self.redDropProbability(len(queue))
+        dropProb = self.redDropProbability(len(queue))
         if len(queue) >= self.buffersize or (random.random() < dropProb):
             self.droppedPackets += 1
             return

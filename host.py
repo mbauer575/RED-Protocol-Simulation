@@ -65,8 +65,8 @@ class Host(Node):
             self.t = (np.random.pareto(self.aON if self.sendState else self.aOFF) + 1) * self.xMin
             if self.sendState:
                 self.hostDestination = self.sim.getRandomHost(self)
-                # self.sendType = random.choice(["udp", "tcp"])
-                self.sendType = "udp" # temp
+                self.sendType = random.choice(["udp", "tcp"])
+                # self.sendType = "udp" # temp
 
         if self.sendState:
             if self.sendType == "udp":
