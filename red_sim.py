@@ -80,6 +80,10 @@ class Simulation():
         self.tick = 0
         self.propScale = propScale
         self.bufferSize = bufferSize
+        self.wq = wq         # RED: weight for average queue calculation
+        self.minTh = minTh   # RED: minimum threshold
+        self.maxTh = maxTh   # RED: maximum threshold
+        self.maxP = maxP     # RED: maximum drop probability
         occupied = [None]*(numRouters+numHosts)
     
         # create routers
@@ -160,7 +164,7 @@ class Simulation():
                         full += 1
             return full / queues
 
-currentSim = Simulation(6, 15, 10, 1, 10, 0, 0, 0, 0, 10)
+currentSim = Simulation(6, 15, 10, 1, 10, 0.002, 5, 15, 0.02, 10)
 currentSim.run(10000, False)
 currentSim.run(10000, True)
 print(f"Sent packets: {currentSim.getStat('sentPackets')}")

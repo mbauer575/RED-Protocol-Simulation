@@ -14,6 +14,7 @@ class Router(Node):
 
         self.averageQueueLength = 0 # idk if this is over time or just at the end of sim, rn its at end
         self.droppedPackets = 0
+        self.avgQueue = {}  # New: RED average for each outgoing link
         
     def generateRoute(self, host, mst, hostRouter):
         if self == hostRouter:
@@ -65,7 +66,11 @@ class Router(Node):
         if outlink not in self.queues:
             self.queues[outlink] = []
         queue = self.queues[outlink]
-        dropProb = self.redDropProbability(len(queue))
+        # Update running average for the queue on this outgoing link
+        old_avg = self.avgQueue.get(outlink, 0)
+        new_avg = (1 - self.sim.wq) * old_avg + self.sim.wq * len(queue)
+        self.avgQueue[outlink] = new_avg
+        dropProb = self.redDropProbability(new_avg)
         if len(queue) >= self.bufferSize or (random.random() < dropProb):
             if collectData: self.droppedPackets += 1
             # print(f"{self} dropped: {packet}")
@@ -94,8 +99,13 @@ class Router(Node):
     #         if not outlink.active and len(self.queues[outlink]) > 0:
     #             outlink.injectPacket(self, packet)
 
-    def redDropProbability(self, queueLength):
-        return 0
+    def redDropProbability(self, avgQueueLength):
+        if avgQueueLength < self.sim.minTh:
+            return 0
+        elif avgQueueLength > self.sim.maxTh:
+            return 1
+        else:
+            return self.sim.maxP * (avgQueueLength - self.sim.minTh) / (self.sim.maxTh - self.sim.minTh)
     
     def __str__(self):
         return super().__str__()
