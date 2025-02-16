@@ -100,6 +100,9 @@ class Router(Node):
     #             outlink.injectPacket(self, packet)
 
     def redDropProbability(self, avgQueueLength):
+        if self.sim.minTh == 0 and self.sim.maxTh == 0:
+            return 0
+    
         if avgQueueLength < self.sim.minTh:
             return 0
         elif avgQueueLength > self.sim.maxTh:
