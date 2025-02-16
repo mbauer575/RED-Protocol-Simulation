@@ -18,4 +18,4 @@ class Packet:
             self.ackBit = None
 
     def __str__(self):
-        return f"Packet ({self.type}) from {self.source} to {self.destination}"
+        return f"Packet ({self.type}) going from {self.source} to {self.destination}"
