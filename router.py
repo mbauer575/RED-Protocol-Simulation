@@ -14,7 +14,7 @@ class Router(Node):
 
         self.averageQueueLength = 0 # idk if this is over time or just at the end of sim, rn its at end
         self.droppedPackets = 0
-        self.avgQueue = {}  # New: RED average for each outgoing link
+        self.avgQueue = {}  # RED average for each outgoing link
         
     def generateRoute(self, host, mst, hostRouter):
         if self == hostRouter:
@@ -100,14 +100,16 @@ class Router(Node):
     #             outlink.injectPacket(self, packet)
 
     def redDropProbability(self, avgQueueLength):
+        # If minTh and maxTh are both 0, RED is disabled
         if self.sim.minTh == 0 and self.sim.maxTh == 0:
             return 0
-    
+
         if avgQueueLength < self.sim.minTh:
             return 0
         elif avgQueueLength > self.sim.maxTh:
             return 1
         else:
+            # RED drop probability calculation
             return self.sim.maxP * (avgQueueLength - self.sim.minTh) / (self.sim.maxTh - self.sim.minTh)
     
     def __str__(self):
