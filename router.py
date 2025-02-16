@@ -66,7 +66,7 @@ class Router(Node):
             self.queues[outlink] = []
         queue = self.queues[outlink]
         dropProb =  self.redDropProbability(len(queue))
-        if len(queue) >= self.buffersize or (random.random() < drop.prob):
+        if len(queue) >= self.buffersize or (random.random() < dropProb):
             self.droppedPackets += 1
             return
 
@@ -88,6 +88,9 @@ class Router(Node):
         if outlink:
             if not outlink.active and len(self.queues[outlink]) > 0:
                 outlink.injectPacket(self, packet)
+
+    def redDropProbability(queueLength):
+        return 0
     
     def __str__(self):
         return super().__str__()
