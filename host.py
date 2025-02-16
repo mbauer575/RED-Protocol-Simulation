@@ -54,7 +54,7 @@ class Host(Node):
         # check link for incoming
         incomingPacket = self.links[0].getPacket(self)
         if incomingPacket:
-            print(f"{self} recieved a packet: {incomingPacket}")
+            print(f"{self} received a packet: {incomingPacket}")
             self.packetsRecieved += 1
 
         self.t -= 1
