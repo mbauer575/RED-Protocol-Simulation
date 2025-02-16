@@ -12,7 +12,7 @@ class Router(Node):
         self.bufferSize = bufferSize
         self.queues = {} # Link, List
 
-        self.averageQueueLength = 0
+        self.averageQueueLength = 0 # idk if this is over time or just at the end of sim, rn its at end
         self.droppedPackets = 0
         
     def generateRoute(self, host, mst, hostRouter):
@@ -45,12 +45,12 @@ class Router(Node):
             if nextHop in (link.node1, link.node2):
                 self.routingTable[host] = link
     
-    def tick(self):
+    def tick(self, collectData):
         # Process incoming packets
         for link in self.links:
             packet = link.getPacket(self)
             if packet:
-                self.processPacket(packet)
+                self.processPacket(packet, collectData)
         
         # Forward packets
         for link, queue in self.queues.items():
@@ -58,7 +58,7 @@ class Router(Node):
                 if link.injectPacket(self, queue[0]):
                     queue.pop(0)
 
-    def processPacket(self,packet):
+    def processPacket(self, packet, collectData):
         if packet.destination not in self.routingTable:
             return
         outlink = self.routingTable[packet.destination]
@@ -67,7 +67,7 @@ class Router(Node):
         queue = self.queues[outlink]
         dropProb = self.redDropProbability(len(queue))
         if len(queue) >= self.bufferSize or (random.random() < dropProb):
-            self.droppedPackets += 1
+            if collectData: self.droppedPackets += 1
             # print(f"{self} dropped: {packet}")
             return
 

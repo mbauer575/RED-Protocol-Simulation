@@ -110,16 +110,17 @@ class Simulation():
             h = random.choice(self.hosts)
         return h
 
-    def run(self, runTicks):
+    def run(self, runTicks, collectData):
+        endTick = runTicks + self.tick
         # run simulation
-        while (self.tick < runTicks):
+        while (self.tick < endTick):
             for host in self.hosts:
-                host.tick()
+                host.tick(collectData)
             for router in self.routers:
-                router.tick()
+                router.tick(collectData)
             self.tick += 1
-        pass
-    
+        print(f"Ran simulation for {runTicks}, now at {self.tick} ticks")
+
     def getStat(self, stat):
         if stat == "droppedPackets":
             dropped = 0
@@ -160,7 +161,8 @@ class Simulation():
             return full / queues
 
 currentSim = Simulation(6, 15, 10, 1, 10, 0, 0, 0, 0, 10)
-currentSim.run(10000)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
 print(f"Sent packets: {currentSim.getStat('sentPackets')}")
 print(f"Recieved packets: {currentSim.getStat('recievedPackets')}")
 print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")

@@ -50,12 +50,12 @@ class Host(Node):
                 bestRouter = router
         return bestRouter
 
-    def tick(self):
+    def tick(self, collectData):
         # check link for incoming
         incomingPacket = self.links[0].getPacket(self)
         if incomingPacket:
             # print(f"{self} received a packet: {incomingPacket}")
-            self.packetsRecieved += 1
+            if collectData: self.packetsRecieved += 1
 
         self.t -= 1
         if self.t <= 0:
@@ -91,7 +91,7 @@ class Host(Node):
                 if queue:
                     if self.links[0].injectPacket(self, queue[0]):
                         queue.pop(0)
-                        self.packetsSent += 1
+                        if collectData: self.packetsSent += 1
 
     def sendTCPPacket(self, dest):
         if dest not in self.cwnd:
