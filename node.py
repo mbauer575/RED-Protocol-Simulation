@@ -33,8 +33,8 @@ class Node:
         data = self.__str__() + ": Links: "
         for link in self.links:
             other = link.getOther(self)
-            data += f"{type(other).__name__}({other.x:.2f}, {other.y:.2f}) "
+            data += f"{other} "
         return data
 
     def __str__(self):
-        return f"{type(self).__name__} at {self.x:.2f}, {self.y:.2f}"
+        return f"{type(self).__name__} at ({self.x:.2f}, {self.y:.2f})"

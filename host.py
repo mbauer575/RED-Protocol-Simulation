@@ -34,8 +34,6 @@ class Host(Node):
         self.packetsSent = 0
         self.packetsRecieved = 0
         self.nextSeqNum = {}
-    
-
 
         hostRouter = self.findClosestRouter(routers)
         hostRouter.linkTo(self)

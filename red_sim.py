@@ -97,9 +97,9 @@ class Simulation():
             self.hosts[i] = Host(self, self.propScale, occupied, aON, aOFF, self.routers, mst)
 
         for i in range(numRouters):
-            print(self.routers[i])
+            print(self.routers[i].longStr())
         for i in range(numHosts):
-            print(self.hosts[i])
+            print(self.hosts[i].longStr())
         # drawNodes(self)
         # drawRoute(self, random.choice(self.routers), random.choice(self.hosts))
 
@@ -136,7 +136,7 @@ class Simulation():
                 recieved += host.packetsRecieved
             return recieved
 
-currentSim = Simulation(3, 4, 100, 1, 1, 0, 0, 0, 0, 10)
+currentSim = Simulation(6, 4, 100, 1, 1, 0, 0, 0, 0, 10)
 currentSim.run(10000)
 print(f"Sent {currentSim.getStat('sentPackets')} packets")
 print(f"Recieved {currentSim.getStat('recievedPackets')} packets")
