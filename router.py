@@ -15,6 +15,7 @@ class Router(Node):
         self.averageQueueLength = 0 # idk if this is over time or just at the end of sim, rn its at end
         self.droppedPackets = 0
         self.avgQueue = {}  # RED average for each outgoing link
+        self.sinceMarked = {} # packets arrived since last marked, for each link
         
     def generateRoute(self, host, mst, hostRouter):
         if self == hostRouter:
@@ -71,33 +72,31 @@ class Router(Node):
         new_avg = (1 - self.sim.wq) * old_avg + self.sim.wq * len(queue)
         self.avgQueue[outlink] = new_avg
         dropProb = self.redDropProbability(new_avg)
-        if len(queue) >= self.bufferSize or (random.random() < dropProb):
+        if (len(queue) >= self.bufferSize):
             if collectData: self.droppedPackets += 1
             # print(f"{self} dropped: {packet}")
             return
+        
+        # IF red enabled
+        if self.sim.maxP:
+            mark = False
+            if (self.sim.redDistribution == "geometric"):
+                if (1-dropProb)^(self.sinceMarked.get(outlink, 0))*dropProb:
+                    mark = True
+                    # print(f"{self} dropped: {packet} due to red geometric")
+            elif (self.sim.redDistribution == "uniform"):
+                if dropProb/(1 - self.sinceMarked.get(outlink, 0)*dropProb):
+                    mark = True
+                    # print(f"{self} dropped: {packet} due to red uniform")
+
+            if mark:
+                if collectData: self.droppedPackets += 1
+                self.sinceMarked[outlink] = 0
+                return
+            else:
+                self.sinceMarked[outlink] = self.sinceMarked.get(outlink, 0) + 1
 
         queue.append(packet)
-
-        # IDK what to do with this
-        # if packet.type == "tcp":
-        #     if packet.ackBit == 0:
-        #         self.forwardPacket(packet)
-        #     else:
-        #         self.forwardAck(packet)
-        # else:
-        #     self.forwardPacket(packet)
-
-    # def forwardPacket(self, packet):
-    #     outlink = self.routingTable[packet.destination]
-    #     if outlink:
-    #         if not outlink.active and len(self.queues[outlink]) > 0:
-    #             outlink.injectPacket(self, packet)
-
-    # def forwardAck(self, packet):
-    #     outlink = self.routingTable[packet.source]
-    #     if outlink:
-    #         if not outlink.active and len(self.queues[outlink]) > 0:
-    #             outlink.injectPacket(self, packet)
 
     def redDropProbability(self, avgQueueLength):
         # If maxP is 0, RED is disabled

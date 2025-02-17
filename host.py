@@ -32,7 +32,7 @@ class Host(Node):
         
         #PACKET TRACKING
         self.packetsSent = 0
-        self.packetsRecieved = 0
+        self.packetsReceived = 0
         self.nextSeqNum = {}
 
         hostRouter = self.findClosestRouter(routers)
@@ -55,7 +55,7 @@ class Host(Node):
         incomingPacket = self.links[0].getPacket(self)
         if incomingPacket:
             # print(f"{self} received a packet: {incomingPacket}")
-            if collectData: self.packetsRecieved += 1
+            if collectData: self.packetsReceived += 1
 
         self.t -= 1
         if self.t <= 0:
