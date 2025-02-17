@@ -6,6 +6,7 @@ from packet import Packet
 import random
 
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 
 # Red Protocol Simulation
 
@@ -43,25 +44,26 @@ def prims(routers):
 
 
 def generateNodePlot(sim):
+    fig, ax = plt.subplots()
     routerCoordsX = []
     routerCoordsY = []
     for router in sim.routers:
         routerCoordsX.append(router.x)
         routerCoordsY.append(router.y)
         for link in router.links:
-            plt.plot([link.node1.x, link.node2.x], [link.node1.y, link.node2.y], color='blue', zorder=1)
+            ax.plot([link.node1.x, link.node2.x], [link.node1.y, link.node2.y], color='blue', zorder=1)
     hostCoordsX = []
     hostCoordsY = []
     for host in sim.hosts:
         hostCoordsX.append(host.x)
         hostCoordsY.append(host.y)
-    plt.scatter(routerCoordsX, routerCoordsY, color='red', label='Routers', zorder=2)
-    plt.scatter(hostCoordsX, hostCoordsY, color='green', label='Hosts', zorder=2)
+    ax.scatter(routerCoordsX, routerCoordsY, color='red', label='Routers', zorder=2)
+    ax.scatter(hostCoordsX, hostCoordsY, color='green', label='Hosts', zorder=2)
     plt.xlabel("X Axis")
     plt.ylabel("Y Axis")
     plt.title("Nodes")
-    plt.xticks(range(0,sim.propScale + 1))
-    plt.yticks(range(0,sim.propScale + 1))
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
     plt.legend()
 
 # Debug draw nodes
@@ -107,13 +109,6 @@ class Simulation():
         self.hosts = [None]*numHosts
         for i in range(numHosts):
             self.hosts[i] = Host(self, self.propScale, occupied, aON, aOFF, self.routers, mst)
-
-        # for i in range(numRouters):
-        #     print(self.routers[i].longStr())
-        # for i in range(numHosts):
-        #     print(self.hosts[i].longStr())
-        # drawNodes(self)
-        # drawRoute(self, random.choice(self.routers), random.choice(self.hosts))
 
     def getRandomHost(self, exclude):
         h = random.choice(self.hosts)

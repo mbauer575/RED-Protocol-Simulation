@@ -53,7 +53,7 @@ class Host(Node):
     def tick(self, collectData):
         # check link for incoming
         incomingPacket = self.links[0].getPacket(self)
-        if incomingPacket:
+        if incomingPacket and incomingPacket.destination == self:
             # print(f"{self} received a packet: {incomingPacket}")
             if collectData: self.packetsReceived += 1
 
@@ -64,10 +64,7 @@ class Host(Node):
             # print(f"send: {self.sendState} t: {self.t}")
             if self.sendState:
                 self.hostDestination = self.sim.getRandomHost(self)
-                # self.hostDestination = self.sim.hosts[0] if not self == self.sim.hosts[0] else self.sim.getRandomHost(self)
                 self.sendType = random.choice(["udp", "tcp"])
-                # self.sendType = "udp" # temp
-                # self.sendType = "tcp"
 
         if self.sendState:
             if self.sendType == "udp":
