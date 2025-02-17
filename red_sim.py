@@ -170,7 +170,7 @@ class Simulation():
                         full += 1
             return full / queues
 
-currentSim = Simulation(6, 15, 10, 1, 10, 0.002, 5, 15, 0.02, 10)
+currentSim = Simulation(6, 15, 10, 1, 10, 0.002, 5, 8, 0.02, 10)
 currentSim.run(10000, False)
 currentSim.run(10000, True)
 print(f"Sent packets: {currentSim.getStat('sentPackets')}")
