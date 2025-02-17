@@ -15,7 +15,7 @@ class Router(Node):
         self.averageQueueLength = 0 # idk if this is over time or just at the end of sim, rn its at end
         self.droppedPackets = 0
         self.avgQueue = {}  # RED average for each outgoing link
-        self.sinceMarked = {} # packets arrived since last marked, for each link
+        self.markCounter = {} # packets arrived since last marked, for each link
         
     def generateRoute(self, host, mst, hostRouter):
         if self == hostRouter:
@@ -81,20 +81,20 @@ class Router(Node):
         if self.sim.maxP:
             mark = False
             if (self.sim.redDistribution == "geometric"):
-                if (1-dropProb)^(self.sinceMarked.get(outlink, 0))*dropProb:
+                if random.random() < dropProb:
                     mark = True
-                    # print(f"{self} dropped: {packet} due to red geometric")
+                    # print(f"{self} dropped: {packet} due to RED geometric")
             elif (self.sim.redDistribution == "uniform"):
-                if dropProb/(1 - self.sinceMarked.get(outlink, 0)*dropProb):
+                if random.random() < dropProb / (1 - (self.markCounter.get(outlink, 0)*dropProb)):
                     mark = True
-                    # print(f"{self} dropped: {packet} due to red uniform")
+                    self.markCounter[outlink] = 0
+                    # print(f"{self} dropped: {packet} due to RED uniform")
+                else:
+                    self.markCounter[outlink] = self.markCounter.get(outlink, 0) + 1
 
             if mark:
                 if collectData: self.droppedPackets += 1
-                self.sinceMarked[outlink] = 0
                 return
-            else:
-                self.sinceMarked[outlink] = self.sinceMarked.get(outlink, 0) + 1
 
         queue.append(packet)
 
