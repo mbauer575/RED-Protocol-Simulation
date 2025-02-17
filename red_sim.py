@@ -107,10 +107,10 @@ class Simulation():
         for i in range(numHosts):
             self.hosts[i] = Host(self, self.propScale, occupied, aON, aOFF, self.routers, mst)
 
-        for i in range(numRouters):
-            print(self.routers[i].longStr())
-        for i in range(numHosts):
-            print(self.hosts[i].longStr())
+        # for i in range(numRouters):
+        #     print(self.routers[i].longStr())
+        # for i in range(numHosts):
+        #     print(self.hosts[i].longStr())
         # drawNodes(self)
         # drawRoute(self, random.choice(self.routers), random.choice(self.hosts))
 
@@ -129,7 +129,7 @@ class Simulation():
             for router in self.routers:
                 router.tick(collectData)
             self.tick += 1
-        print(f"Ran simulation for {runTicks}, now at {self.tick} ticks")
+        print(f"Ran simulation for {runTicks} ticks, now at {self.tick} total ticks")
 
     def getStat(self, stat):
         if stat == "droppedPackets":
@@ -142,11 +142,11 @@ class Simulation():
             for host in self.hosts:
                 sent += host.packetsSent
             return sent
-        elif stat == "recievedPackets":
-            recieved = 0
+        elif stat == "receivedPackets":
+            received = 0
             for host in self.hosts:
-                recieved += host.packetsRecieved
-            return recieved
+                received += host.packetsReceived
+            return received
         elif stat == "hostUDPQueue":
             hostQueue = 0
             for host in self.hosts:
@@ -170,13 +170,192 @@ class Simulation():
                         full += 1
             return full / queues
 
-currentSim = Simulation(6, 15, 10, 1, 10, 0.002, 5, 8, 0.02, 10)
+print("Low Router:Host, Low Buffer, Low Prop Scale, No RED")
+currentSim = Simulation(10, 30, 3, 3, 50, 0.01, 10, 30, 0, 100)
 currentSim.run(10000, False)
 currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
 print(f"Sent packets: {currentSim.getStat('sentPackets')}")
-print(f"Recieved packets: {currentSim.getStat('recievedPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
 print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
-print(f"Packets waiting in host queue: {currentSim.getStat('hostUDPQueue')}")
 print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
 print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
-drawNodes(currentSim)
+
+print("\nLow Router:Host, Low Buffer, Low Prop Scale, RED")
+currentSim = Simulation(10, 30, 3, 3, 50, 0.01, 10, 30, 0.3, 100)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+# High prop
+
+print("\nLow Router:Host, Low Buffer, High Prop Scale, No RED")
+currentSim = Simulation(10, 30, 3, 3, 50, 0.01, 10, 30, 0, 200)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+print("\nLow Router:Host, Low Buffer, High Prop Scale, RED")
+currentSim = Simulation(10, 30, 3, 3, 50, 0.01, 10, 30, 0.3, 200)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+# Large buffer
+
+print("\nLow Router:Host, High Buffer, Low Prop Scale, No RED")
+currentSim = Simulation(10, 30, 3, 3, 100, 0.01, 20, 60, 0, 100)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+print("\nLow Router:Host, High Buffer, Low Prop Scale, RED")
+currentSim = Simulation(10, 30, 3, 3, 100, 0.01, 20, 60, 0.3, 100)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+# Large buffer, High prop
+
+print("\nLow Router:Host, High Buffer, High Prop Scale, No RED")
+currentSim = Simulation(10, 30, 3, 3, 100, 0.01, 20, 60, 0, 200)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+print("\nLow Router:Host, High Buffer, High Prop Scale, RED")
+currentSim = Simulation(10, 30, 3, 3, 100, 0.01, 20, 60, 0.3, 200)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+# High Router:Host
+
+print("\nHigh Router:Host, Low Buffer, Low Prop Scale, No RED")
+currentSim = Simulation(10, 10, 3, 3, 50, 0.01, 10, 30, 0, 100)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+print("\nHigh Router:Host, Low Buffer, Low Prop Scale, RED")
+currentSim = Simulation(10, 10, 3, 3, 50, 0.01, 10, 30, 0.3, 100)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+# High Router:Host, High prop
+
+print("\nHigh Router:Host, Low Buffer, High Prop Scale, No RED")
+currentSim = Simulation(10, 10, 3, 3, 50, 0.01, 10, 30, 0, 200)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+print("\nHigh Router:Host, Low Buffer, High Prop Scale, RED")
+currentSim = Simulation(10, 10, 3, 3, 50, 0.01, 10, 30, 0.3, 200)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+# High Router:Host, High buffer
+
+print("\nHigh Router:Host, High Buffer, Low Prop Scale, No RED")
+currentSim = Simulation(10, 10, 3, 3, 100, 0.01, 20, 60, 0, 100)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+print("\nHigh Router:Host, High Buffer, Low Prop Scale, RED")
+currentSim = Simulation(10, 10, 3, 3, 100, 0.01, 20, 60, 0.3, 100)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+# High Router:Host, High buffer, High prop
+
+print("\nHigh Router:Host, High Buffer, High Prop Scale, No RED")
+currentSim = Simulation(10, 10, 3, 3, 100, 0.01, 20, 60, 0, 200)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")
+
+print("\nHigh Router:Host, High Buffer, High Prop Scale, RED")
+currentSim = Simulation(10, 10, 3, 3, 100, 0.01, 20, 60, 0.3, 200)
+currentSim.run(10000, False)
+currentSim.run(10000, True)
+print(f"Packets waiting in host udp queue: {currentSim.getStat('hostUDPQueue')}")
+print(f"Sent packets: {currentSim.getStat('sentPackets')}")
+print(f"Received packets: {currentSim.getStat('receivedPackets')}")
+print(f"Dropped packets: {currentSim.getStat('droppedPackets')}")
+print(f"Average router queue length: {currentSim.getStat('routerQueueLength'):.2f}")
+print(f"Proportion of congested queues: {currentSim.getStat('routerQueueCongestion'):.2f}")

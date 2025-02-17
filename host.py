@@ -61,6 +61,7 @@ class Host(Node):
         if self.t <= 0:
             self.sendState = not self.sendState
             self.t = (np.random.pareto(self.aON if self.sendState else self.aOFF) + 1) * self.xMin
+            # print(f"send: {self.sendState} t: {self.t}")
             if self.sendState:
                 self.hostDestination = self.sim.getRandomHost(self)
                 # self.hostDestination = self.sim.hosts[0] if not self == self.sim.hosts[0] else self.sim.getRandomHost(self)

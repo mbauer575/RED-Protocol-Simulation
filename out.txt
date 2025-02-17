@@ -1,0 +1,159 @@
+Low Router:Host, Low Buffer, Low Prop Scale, No RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 141748
+Sent packets: 4314
+Recieved packets: 260
+Dropped packets: 3880
+Average router queue length: 21.90
+Proportion of congested queues: 0.27
+
+Low Router:Host, Low Buffer, Low Prop Scale, RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 145113
+Sent packets: 2657
+Recieved packets: 338
+Dropped packets: 2216
+Average router queue length: 13.85
+Proportion of congested queues: 0.00
+
+Low Router:Host, Low Buffer, High Prop Scale, No RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 143761
+Sent packets: 2950
+Recieved packets: 74
+Dropped packets: 2744
+Average router queue length: 14.89
+Proportion of congested queues: 0.26
+
+Low Router:Host, Low Buffer, High Prop Scale, RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 145701
+Sent packets: 1877
+Recieved packets: 81
+Dropped packets: 1622
+Average router queue length: 19.51
+Proportion of congested queues: 0.22
+
+Low Router:Host, High Buffer, Low Prop Scale, No RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 148383
+Sent packets: 1095
+Recieved packets: 169
+Dropped packets: 665
+Average router queue length: 21.38
+Proportion of congested queues: 0.15
+
+Low Router:Host, High Buffer, Low Prop Scale, RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 142895
+Sent packets: 4025
+Recieved packets: 418
+Dropped packets: 3341
+Average router queue length: 33.76
+Proportion of congested queues: 0.05
+
+Low Router:Host, High Buffer, High Prop Scale, No RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 148794
+Sent packets: 427
+Recieved packets: 41
+Dropped packets: 19
+Average router queue length: 16.40
+Proportion of congested queues: 0.02
+
+Low Router:Host, High Buffer, High Prop Scale, RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 147361
+Sent packets: 1264
+Recieved packets: 73
+Dropped packets: 896
+Average router queue length: 21.93
+Proportion of congested queues: 0.05
+
+High Router:Host, Low Buffer, Low Prop Scale, No RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 48271
+Sent packets: 765
+Recieved packets: 104
+Dropped packets: 619
+Average router queue length: 22.95
+Proportion of congested queues: 0.40
+
+High Router:Host, Low Buffer, Low Prop Scale, RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 49223
+Sent packets: 461
+Recieved packets: 77
+Dropped packets: 302
+Average router queue length: 18.10
+Proportion of congested queues: 0.14
+
+High Router:Host, Low Buffer, High Prop Scale, No RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 49848
+Sent packets: 242
+Recieved packets: 17
+Dropped packets: 120
+Average router queue length: 12.48
+Proportion of congested queues: 0.13
+
+High Router:Host, Low Buffer, High Prop Scale, RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 49344
+Sent packets: 343
+Recieved packets: 26
+Dropped packets: 278
+Average router queue length: 11.76
+Proportion of congested queues: 0.05
+
+High Router:Host, High Buffer, Low Prop Scale, No RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 49114
+Sent packets: 471
+Recieved packets: 60
+Dropped packets: 153
+Average router queue length: 23.36
+Proportion of congested queues: 0.07
+
+High Router:Host, High Buffer, Low Prop Scale, RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 48386
+Sent packets: 636
+Recieved packets: 82
+Dropped packets: 386
+Average router queue length: 16.14
+Proportion of congested queues: 0.00
+
+High Router:Host, High Buffer, High Prop Scale, No RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 49245
+Sent packets: 396
+Recieved packets: 26
+Dropped packets: 161
+Average router queue length: 25.35
+Proportion of congested queues: 0.09
+
+High Router:Host, High Buffer, High Prop Scale, RED
+Ran simulation for 10000 ticks, now at 10000 total ticks
+Ran simulation for 10000 ticks, now at 20000 total ticks
+Packets waiting in host udp queue: 48758
+Sent packets: 569
+Recieved packets: 19
+Dropped packets: 402
+Average router queue length: 18.36
+Proportion of congested queues: 0.04

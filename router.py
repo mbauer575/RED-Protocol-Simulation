@@ -100,8 +100,8 @@ class Router(Node):
     #             outlink.injectPacket(self, packet)
 
     def redDropProbability(self, avgQueueLength):
-        # If minTh and maxTh are both 0, RED is disabled
-        if self.sim.minTh == 0 and self.sim.maxTh == 0:
+        # If maxP is 0, RED is disabled
+        if self.sim.maxP == 0:
             return 0
 
         if avgQueueLength < self.sim.minTh:
