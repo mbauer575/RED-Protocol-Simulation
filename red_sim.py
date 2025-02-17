@@ -15,24 +15,30 @@ def prims(routers):
     visited = set()
     start = routers[0]
     visited.add(start)
-    edges = []
 
+    edges = []
     for router in routers:
         if router != start:
             distance = start.distanceTo(router)
             edges.append((distance, start, router))
-    
-    while edges:
-        edges.sort(key=lambda x: x[0])
-        distance, source, dest = edges.pop(0)
-        if dest not in visited:
-            visited.add(dest)
+
+    while len(visited) < len(routers):
+        min_edge = None
+        for edge in edges:
+            distance, source, dest = edge
+            if source in visited and dest not in visited:
+                if min_edge is None or distance < min_edge[0]:
+                    min_edge = edge
+
+        if min_edge:
+            distance, source, dest = min_edge
             mst.append((source, dest, distance))
+            visited.add(dest)
             for router in routers:
                 if router not in visited:
                     distance = dest.distanceTo(router)
                     edges.append((distance, dest, router))
-    
+
     return mst
 
 
